@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elite Gym Dashboard</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:black;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    /* BACKGROUND */
+
+    body::before{
+      content:'';
+      position:fixed;
+      width:100%;
+      height:100%;
+      background:
+      radial-gradient(circle at top right,
+      rgba(255,0,0,0.2),
+      transparent 40%);
+      z-index:-1;
+    }
+
+    /* NAVBAR */
+
+    nav{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:25px 70px;
+      border-bottom:1px solid rgba(255,0,0,0.2);
+      position:sticky;
+      top:0;
+      backdrop-filter:blur(10px);
+      background:rgba(0,0,0,0.7);
+      z-index:100;
+    }
+
+    .logo{
+      font-size:35px;
+      font-weight:bold;
+      color:#ff2e2e;
+    }
+
+    .nav-links ul{
+      display:flex;
+      gap:30px;
+      list-style: none;
+    }
+
+    .nav-links a{
+      color:white;
+      text-decoration:none;
+      transition:0.3s;
+      font-size:18px;
+    }
+
+    .nav-links a:hover{
+      color:#ff2e2e;
+    }
+
+    .profile{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:18px;
+    }
+
+    .profile i{
+      font-size:35px;
+      color:#ff2e2e;
+    }
+
+    /* HERO */
+
+    .hero{
+      padding:80px 70px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      align-items:center;
+      gap:50px;
+    }
+
+    .hero h1{
+      font-size:80px;
+      line-height:1.1;
+      font-weight:900;
+    }
+
+    .hero span{
+      color:#ff2e2e;
+    }
+
+    .hero p{
+      color:gray;
+      margin-top:25px;
+      font-size:20px;
+      max-width:550px;
+      line-height:1.7;
+    }
+
+    .hero button{
+      margin-top:35px;
+      padding:18px 40px;
+      border:none;
+      border-radius:15px;
+      background:#ff2e2e;
+      color:white;
+      font-size:20px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+      box-shadow:0 0 25px rgba(255,0,0,0.4);
+    }
+
+    .hero button:hover{
+      transform:scale(1.05);
+      background:#ff0000;
+    }
+
+    /* PROGRESS */
+
+    .progress-box{
+      display:flex;
+      justify-content:center;
+    }
+
+    .circle{
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      border:18px solid #ff2e2e;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      box-shadow:0 0 50px rgba(255,0,0,0.4);
+    }
+
+    .circle h2{
+      font-size:70px;
+    }
+
+    .circle p{
+      text-align:center;
+      margin-top:10px;
+      color:gray;
+      font-size:20px;
+    }
+
+    /* STATS */
+
+    .stats{
+      padding:20px 70px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:30px;
+    }
+
+    .card{
+      background:#111;
+      border-radius:25px;
+      padding:30px;
+      border:1px solid rgba(255,0,0,0.1);
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-8px);
+    }
+
+    .card-icon{
+      width:70px;
+      height:70px;
+      border-radius:20px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:30px;
+      background:linear-gradient(to right,#ff2e2e,#ff6a00);
+    }
+
+    .card h3{
+      margin-top:25px;
+      color:gray;
+      font-size:20px;
+    }
+
+    .card h1{
+      margin-top:10px;
+      font-size:50px;
+    }
+
+    .card p{
+      margin-top:10px;
+      color:#00ff66;
+      font-size:18px;
+    }
+
+    /* BOTTOM */
+
+    .bottom{
+      padding:50px 70px;
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:30px;
+    }
+
+    /* CHART */
+
+    .chart{
+      background:#111;
+      border-radius:25px;
+      padding:30px;
+    }
+
+    .chart h2{
+      font-size:35px;
+      margin-bottom:40px;
+    }
+
+    .bars{
+      height:320px;
+      display:flex;
+      align-items:flex-end;
+      gap:20px;
+    }
+
+    .bar{
+      flex:1;
+      background:linear-gradient(to top,#ff2e2e,#ff6a00);
+      border-radius:20px 20px 0 0;
+      transition:0.3s;
+    }
+
+    .bar:hover{
+      transform:scaleY(1.05);
+    }
+
+    /* WORKOUT */
+
+    .workout{
+      background:#111;
+      border-radius:25px;
+      padding:30px;
+    }
+
+    .workout-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .workout-top h2{
+      font-size:30px;
+    }
+
+    .workout-top i{
+      color:#ff2e2e;
+      font-size:30px;
+    }
+
+    .workout-list{
+      margin-top:30px;
+      display:flex;
+      flex-direction:column;
+      gap:15px;
+    }
+
+    .workout-item{
+      background:black;
+      padding:18px;
+      border-radius:15px;
+      border:1px solid rgba(255,0,0,0.1);
+      transition:0.3s;
+    }
+
+    .workout-item:hover{
+      background:rgba(255,0,0,0.1);
+    }
+
+    /* FORM */
+
+    .form{
+      margin-top:35px;
+    }
+
+    .form input{
+      width:100%;
+      padding:15px;
+      background:black;
+      border:1px solid rgba(255,0,0,0.2);
+      border-radius:12px;
+      color:white;
+      margin-bottom:15px;
+      font-size:16px;
+    }
+
+    .form button{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#ff2e2e;
+      color:white;
+      font-size:18px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .form button:hover{
+      background:red;
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:1000px){
+
+      .hero{
+        grid-template-columns:1fr;
+      }
+
+      .stats{
+        grid-template-columns:1fr;
+      }
+
+      .bottom{
+        grid-template-columns:1fr;
+      }
+
+      nav{
+        padding:20px;
+      }
+
+      .hero{
+        padding:50px 20px;
+      }
+
+      .stats{
+        padding:20px;
+      }
+
+      .bottom{
+        padding:20px;
+      }
+
+      .hero h1{
+        font-size:55px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+  
+  
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function App(){
+
+  const bars = [50,80,65,95,75,100,85];
+
+  const workouts = [
+    "Bench Press",
+    "Deadlift",
+    "CrossFit Training",
+    "Leg Press",
+    "Cardio"
+  ];
+
+  return(
+
+    <div>
+
+      {/* NAVBAR */}
+
+      <nav>
+
+        <div className="logo">
+          ELITE GYM
+        </div>
+
+        <div className="nav-links">
+
+      <ul>
+      <li><a href="index.html.html">Home</a></li>
+      <li><a href="programs.html.html">Programs</a></li>
+      <li><a href="#">Contact</a></li>
+      </ul>
+        </div>
+
+        <div className="profile">
+
+          <i className="fa-solid fa-circle-user"></i>
+
+          <span>login</span>
+
+        </div>
+
+      </nav>
+
+      {/* HERO */}
+
+      <section className="hero">
+
+        <div>
+
+          <h1>
+
+            TRAIN HARD <br/>
+
+            <span>STAY STRONG</span>
+
+          </h1>
+
+          <p>
+
+            Track your workouts, calories burned,
+            performance analytics and body fitness
+            using Elite Gym Dashboard.
+
+          </p>
+
+          <button>
+
+            Start Workout
+
+          </button>
+
+        </div>
+
+        {/* RIGHT */}
+
+        <div className="progress-box">
+
+          <div className="circle">
+
+            <div>
+
+              <h2>78%</h2>
+
+              <p>Weekly Goal</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* STATS */}
+
+      <section className="stats">
+
+        <div className="card">
+
+          <div className="card-icon">
+
+            <i className="fa-solid fa-fire"></i>
+
+          </div>
+
+          <h3>Calories Burned</h3>
+
+          <h1>12,400</h1>
+
+          <p>+12% This Week</p>
+
+        </div>
+
+        <div className="card">
+
+          <div className="card-icon">
+
+            <i className="fa-solid fa-dumbbell"></i>
+
+          </div>
+
+          <h3>Workouts</h3>
+
+          <h1>08</h1>
+
+          <p>+10% This Week</p>
+
+        </div>
+
+        <div className="card">
+
+          <div className="card-icon">
+
+            <i className="fa-solid fa-clock"></i>
+
+          </div>
+
+          <h3>Workout Time</h3>
+
+          <h1>2.5 hrs</h1>
+
+          <p>+8% This Week</p>
+
+        </div>
+
+      </section>
+
+      {/* BOTTOM */}
+
+      <section className="bottom">
+
+        {/* CHART */}
+
+        <div className="chart">
+
+          <h2>Workout Activity</h2>
+
+          <div className="bars">
+
+            {bars.map((height,index)=>(
+
+              <div
+                key={index}
+                className="bar"
+                style={{height:`${height}%`}}
+              ></div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* WORKOUT */}
+
+        <div className="workout">
+
+          <div className="workout-top">
+
+            <h2>Today's Workout</h2>
+
+            <i className="fa-solid fa-plus"></i>
+
+          </div>
+
+          <div className="workout-list">
+
+            {workouts.map((item,index)=>(
+
+              <div key={index} className="workout-item">
+
+                {item}
+
+              </div>
+
+            ))}
+
+          </div>
+
+          {/* FORM */}
+
+          <div className="form">
+
+            <input
+              type="text"
+              placeholder="Add Workout..."
+            />
+
+            <button>
+
+              Add Workout
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+
+</body>
+</html>
